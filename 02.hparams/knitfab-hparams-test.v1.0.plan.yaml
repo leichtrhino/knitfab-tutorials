@@ -1,0 +1,115 @@
+
+
+# annotations (optional, mutable):
+#   Set Annotations of this Plan in list of "key=value" format string.
+#   You can use this for your own purpose, for example documentation. This does not affect lineage tracking.
+#   Knitfab Extensions may refer this.
+annotations: []
+#   - "key=value"
+#   - "description=This is a Plan for ..."
+
+
+# image:
+#   Container image to be executed as this Plan.
+#   This image-tag should be accessible from your knitfab cluster.
+image: "localhost:30503/knitfab-hparams-test:v1.0"
+
+# entrypoint:
+#   Command to be executed as this Plan image.
+#   This array overrides the ENTRYPOINT of the image.
+entrypoint: ["python", "-u", "test.py"]
+
+# args:
+#   Arguments to be passed to this Plan image.
+#   This array overrides the CMD of the image.
+args: ["--input-data", "/in/data", "--input-model", "/in/model"]
+
+# inputs:
+#   List of filepath and Tags as Input of this Plans.
+#   1 or more Inputs are needed.
+#   Each filepath should be absolute. Tags should be formatted in "key:value"-style.
+inputs:
+  - path: "/in/data"
+    tags:
+      - "project:hparams"
+      - "type:data"
+      - "mode:test"
+  - path: "/in/model"
+    tags:
+      - "project:hparams"
+      - "type:model"
+
+# outputs:
+#   List of filepathes and Tags as Output of this Plans.
+#   See "inputs" for detail.
+outputs: []
+
+# log (optional):
+#   Set Tags stored log (STDOUT+STDERR of runs of this Plan) as Data.
+#   If missing or null, log would not be stored.
+log:
+  tags:
+    - "type:log"
+
+# active (optional, mutable):
+#   To suspend executing Runs by this Plan, set false explicitly.
+#   If missing or null, it is assumed as true.
+active: true
+
+# resource (optional, mutable):
+# Specify the resource , cpu or memory for example, requirements for this Plan.
+# This value can be changed after the Plan is applied.
+
+# There can be other resources. For them, ask your administrator.
+
+# (advanced note: These values are passed to container.resource.limits in kubernetes.)
+resouces:
+  
+  # cpu (optional; default = 1):
+  #   Specify the CPU resource requirements for this Plan.
+  #   This value means "how many cores" the plan will use.
+  #   This can be a fraction, like "0.5" or "500m" (= 500 millicore) for a half of a core.
+  cpu: 1
+  
+  # memory (optional; default = 1Gi):
+  #   Specify the memory resource requirements for this Plan.
+  #   This value means "how many bytes" the plan will use.
+  #   You can use suffixes like "Ki", "Mi", "Gi" for kibi-(1024), mebi-(1024^2), gibi-(1024^3) bytes, case sensitive.
+  #   For example, "1Gi" means 1 gibibyte.
+  #   If you omit the suffix, it is assumed as bytes.
+  memory: 1Gi
+
+
+# # on_node (optional):
+# #   Specify the node where this Plan is executed.
+# #
+# #   For each level (may, prefer and must), you can put node labels or taints in "key=value" format.
+# #   Labels show a node characteristic, and taints show a node restriction.
+# #   Ask your administrator for the available labels/taints.
+# #
+# #   By default (= empty), this plan is executed on any node, if the node does not taint.
+# on_node:
+#   # may: (optional)
+#   #   Allow to execute this plan on nodes with these taints, put here.
+#   may:
+#     - "label-a=value1"
+#     - "label-b=value2"
+#
+#   # prefer: (optional)
+#   #   Execute this plan on nodes with these labels & taints, if possible.
+#   prefer:
+#     - "vram=large"
+#
+#   # must: (optional)
+#   #   Always execute this plan on nodes with these labels & taints
+#   #   (taints on node can be subset of this list).
+#   #
+#   #   If no node matches, runs of the plan will be scheduled but not started.
+#   must:
+#     - "accelarator=gpu"
+#
+# # service_account (optional, mutable):
+# #   Specify the service account to run this Plan.
+# #   If missing or null, the service account is not used.
+# service_account: "default"
+
